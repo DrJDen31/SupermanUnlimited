@@ -8,16 +8,31 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "SuperAttributeSet.h"
+#include "DataAssets/SupermanDataAsset.h"
+#include "SuperAbilitySystemComponent.h"
+
+#include "Net/UnrealNetwork.h"
+
+#include "SuperCharacterMovementComponent.h"
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputTriggers.h"
+#include "InputActionValue.h"
+
+#include "GameplayEffectExtension.h"
+
+#include "AbilitySystemLog.h"
 
 
 // Sets default values
-ASuperman::ASuperman()
+ASuperman::ASuperman(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<USuperCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -38,6 +53,8 @@ ASuperman::ASuperman()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
+	SuperCharacterMovementComponent = Cast<USuperCharacterMovementComponent>(GetCharacterMovement());
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -52,6 +69,16 @@ ASuperman::ASuperman()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
+
+	AbilitySystemComponent = CreateDefaultSubobject<USuperAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	AttributeSet = CreateDefaultSubobject<USuperAttributeSet>(TEXT("AttributeSet"));
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxMovementSpeedAttribute()).AddUObject(this, &ASuperman::OnMaxMovementSpeedChanged);
+
+	//AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &ASuperman::OnHealthAttributeChanged);
 }
 
 #pragma region Boilerplate
@@ -70,12 +97,158 @@ void ASuperman::BeginPlay()
 	}
 }
 
-// Called every frame
-void ASuperman::Tick(float DeltaTime)
+void ASuperman::PostLoad()
 {
-	Super::Tick(DeltaTime);
+	Super::PostLoad();
+
+	if (IsValid(CharacterDataAsset))
+	{
+		SetCharacterData(CharacterDataAsset->CharacterData);
+	}
+}
+
+UAbilitySystemComponent* ASuperman::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+void ASuperman::PawnClientRestart()
+{
+	Super::PawnClientRestart();
+
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			Subsystem->ClearAllMappings();
+
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+}
+#pragma endregion
+
+#pragma region AbilitySystem
+
+bool ASuperman::ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect, FGameplayEffectContextHandle InEffectContext)
+{
+	if (!Effect.Get()) return false;
+
+	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1, InEffectContext);
+	if (SpecHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
+		return ActiveGEHandle.WasSuccessfullyApplied();
+	}
+
+	return false;
+}
+
+/*
+void ASuperman::OnHealthAttributeChanged(const FOnAttributeChangeData& Data)
+{
+	if (Data.NewValue <= 0 && Data.OldValue > 0)
+	{
+		AActor* OtherCharacter = nullptr;
+
+		if (Data.GEModData)
+		{
+			const FGameplayEffectContextHandle& EffectContext = Data.GEModData->EffectSpec.GetEffectContext();
+			OtherCharacter = Cast<AActor>(EffectContext.GetInstigator());
+		}
+
+		FGameplayEventData EventPayload;
+		EventPayload.EventTag = ZeroHealthEventTag;
+
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, ZeroHealthEventTag, EventPayload);
+	}
+}
+*/
+
+void ASuperman::OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+}
+
+void ASuperman::GiveAbilities()
+{
+	if (HasAuthority() && AbilitySystemComponent)
+	{
+		for (auto DefaultAbility : CharacterData.Abilities)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(DefaultAbility));
+		}
+	}
+}
+
+void ASuperman::ApplyStartupEffects()
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+		for (auto CharacterEffect : CharacterData.Effects)
+		{
+			ApplyGameplayEffectToSelf(CharacterEffect, EffectContext);
+		}
+	}
+}
+
+void ASuperman::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	GiveAbilities();
+	ApplyStartupEffects();
+}
+
+void ASuperman::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
+
+void ASuperman::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(InAirTags);
+	}
+}
+#pragma endregion
+
+#pragma region CharacterData
+
+FCharacterData ASuperman::GetCharacterData() const
+{
+	return CharacterData;
+}
+
+void ASuperman::SetCharacterData(const FCharacterData& InCharacterData)
+{
+	CharacterData = InCharacterData;
+
+	InitFromCharacterData(CharacterData);
+}
+
+void ASuperman::InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication)
+{
 
 }
+
+void ASuperman::OnRep_CharacterData()
+{
+	InitFromCharacterData(CharacterData, true);
+}
+
 #pragma endregion
 
 // Called to bind functionality to input
@@ -138,4 +311,12 @@ void ASuperman::Look(const FInputActionValue& Value)
 
 void ASuperman::OnFlyPressed(const FInputActionValue& Value) {
 
+}
+
+
+void ASuperman::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASuperman, CharacterData);
 }
