@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class SUPERMANUNLIMITED_API USupermanDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
