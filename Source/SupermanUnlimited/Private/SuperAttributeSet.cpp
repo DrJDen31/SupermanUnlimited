@@ -10,35 +10,6 @@
 void USuperAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-
-	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
-	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-	}
-	else if (Data.EvaluatedData.Attribute == GetMaxMovementSpeedAttribute())
-	{
-		ACharacter* OwningCharacter = Cast<ACharacter>(GetOwningActor());
-		UCharacterMovementComponent* CharacterMovement = OwningCharacter ? OwningCharacter->GetCharacterMovement() : nullptr;
-
-		if (CharacterMovement)
-		{
-			const float MaxGroundSpeed = GetMaxMovementSpeed();
-
-			CharacterMovement->MaxWalkSpeed = MaxGroundSpeed;
-		}
-	}
-}
-
-UFUNCTION()
-void USuperAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(USuperAttributeSet, Health, OldHealth);
-}
-
-UFUNCTION()
-void USuperAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(USuperAttributeSet, MaxHealth, OldMaxHealth);
 }
 
 void USuperAttributeSet::OnRep_Weakness(const FGameplayAttributeData& OldWeakness)
@@ -61,11 +32,6 @@ void USuperAttributeSet::OnRep_MaxStrength(const FGameplayAttributeData& OldMaxS
 	GAMEPLAYATTRIBUTE_REPNOTIFY(USuperAttributeSet, MaxStrength, OldMaxStrength);
 }
 
-void USuperAttributeSet::OnRep_MaxMovementSpeed(const FGameplayAttributeData& OldMaxMovementSpeed)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(USuperAttributeSet, MaxMovementSpeed, OldMaxMovementSpeed);
-}
-
 void USuperAttributeSet::OnRep_Speed(const FGameplayAttributeData& OldSpeed)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(USuperAttributeSet, Speed, OldSpeed);
@@ -80,13 +46,10 @@ void USuperAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProper
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, Health, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, Weakness, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, MaxWeakness, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, Strength, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, MaxStrength, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, MaxMovementSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, Speed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USuperAttributeSet, MaxSpeed, COND_None, REPNOTIFY_Always);
 }

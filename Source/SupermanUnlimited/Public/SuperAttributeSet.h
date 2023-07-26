@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
+#include "AbilitySystem/AttributeSets/AttributeSetBase.h"
 #include "AbilitySystemComponent.h"
 #include "SuperAttributeSet.generated.h"
 
@@ -11,27 +12,12 @@
  * 
  */
 
-#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
-	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
-
-
 UCLASS()
-class SUPERMANUNLIMITED_API USuperAttributeSet : public UAttributeSet
+class SUPERMANUNLIMITED_API USuperAttributeSet : public UAttributeSetBase
 {
 	GENERATED_BODY()
 	
 public:
-
-	UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_Health)
-	FGameplayAttributeData Health;
-	ATTRIBUTE_ACCESSORS(USuperAttributeSet, Health)
-
-	UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_MaxHealth)
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(USuperAttributeSet, MaxHealth)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weakness", ReplicatedUsing = OnRep_Weakness)
 	FGameplayAttributeData Weakness;
@@ -49,10 +35,6 @@ public:
 	FGameplayAttributeData MaxStrength;
 	ATTRIBUTE_ACCESSORS(USuperAttributeSet, MaxStrength)
 
-	UPROPERTY(BlueprintReadOnly, Category = "MovementSpeed", ReplicatedUsing = OnRep_MaxMovementSpeed)
-	FGameplayAttributeData MaxMovementSpeed;
-	ATTRIBUTE_ACCESSORS(USuperAttributeSet, MaxMovementSpeed)
-
 	UPROPERTY(BlueprintReadOnly, Category = "Speed", ReplicatedUsing = OnRep_Speed)
 	FGameplayAttributeData Speed;
 	ATTRIBUTE_ACCESSORS(USuperAttributeSet, Speed)
@@ -66,12 +48,6 @@ protected:
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData &Data) override;
 
 	UFUNCTION()
-	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
-
-	UFUNCTION()
-	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
-
-	UFUNCTION()
 	virtual void OnRep_Weakness(const FGameplayAttributeData& OldWeakness);
 
 	UFUNCTION()
@@ -82,9 +58,6 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_MaxStrength(const FGameplayAttributeData& OldMaxStrength);
-
-	UFUNCTION()
-	virtual void OnRep_MaxMovementSpeed(const FGameplayAttributeData& OldMaxMovementSpeed);
 
 	UFUNCTION()
 	virtual void OnRep_Speed(const FGameplayAttributeData& OldSpeed);
