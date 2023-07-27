@@ -41,6 +41,10 @@ class SUPERMANUNLIMITED_API ASuperman : public APlayableCharacterBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* FlyAction;
 
+	/** Boost Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* BoostAction;
+
 public:
 	// Sets default values for this character's properties
 	ASuperman(const FObjectInitializer& ObjectInitializer);
@@ -66,6 +70,9 @@ protected:
 
 	/** Called for flight input */
 	void OnFlyPressed(const FInputActionValue& Value);
+
+	void OnBoostPressed(const FInputActionValue& Value);
+	void OnBoostReleased(const FInputActionValue& Value);
 
 	//void Move(const FInputActionValue& Value);
 	//void Look(const FInputActionValue& Value);

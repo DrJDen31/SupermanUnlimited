@@ -80,26 +80,33 @@ void APlayableCharacterBase::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-		const FRotator PitchRotation(Rotation.Pitch, 0, 0);
+		if (SuperCharacterMovementComponent->IsFlying())
+		{
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FVector Direction = Rotation.Vector();
+			AddMovementInput(Direction, MovementVector.Y);
 
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+			// get right vector 
+			const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			AddMovementInput(RightDirection, MovementVector.X);
+		}
+		else
+		{
+			// find out which way is forward
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+			const FRotator PitchRotation(Rotation.Pitch, 0, 0);
 
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			// get forward vector
+			const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
-		// get up vector 
-		// FIX VECTOR MATH
-		const FVector UpDirection = FRotationMatrix(PitchRotation).GetUnitAxis(EAxis::Z);
+			// get right vector 
+			const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-		if (GetCharacterMovement()->IsFlying()) {
-			AddMovementInput(UpDirection, MovementVector.Y);
+			// add movement 
+			AddMovementInput(ForwardDirection, MovementVector.Y);
+			AddMovementInput(RightDirection, MovementVector.X);
 		}
 	}
 }

@@ -111,6 +111,10 @@ void ASuperman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		//Flight
 		EnhancedInputComponent->BindAction(FlyAction, ETriggerEvent::Triggered, this, &ASuperman::OnFlyPressed);
 
+		//Boost
+		EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Triggered, this, &ASuperman::OnBoostPressed);
+		EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Completed, this, &ASuperman::OnBoostReleased);
+
 		//Moving
 	    //EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASuperman::Move);
 
@@ -161,5 +165,28 @@ void ASuperman::Look(const FInputActionValue& Value)
 
 void ASuperman::OnFlyPressed(const FInputActionValue& Value) 
 {
-	
+	if (SuperCharacterMovementComponent->IsFlying()) 
+	{
+		SuperCharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
+		bUseControllerRotationPitch = false;
+		bUseControllerRotationYaw = false;
+		bUseControllerRotationRoll = false;
+	}
+	else
+	{
+		SuperCharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Flying);
+		bUseControllerRotationPitch = true;
+		bUseControllerRotationYaw = true;
+		bUseControllerRotationRoll = true;
+	}
+}
+
+void ASuperman::OnBoostPressed(const FInputActionValue& Value)
+{
+	SuperCharacterMovementComponent->IsBoosting = true;
+}
+
+void ASuperman::OnBoostReleased(const FInputActionValue& Value)
+{
+	SuperCharacterMovementComponent->IsBoosting = false;
 }
