@@ -5,15 +5,18 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "SupermanUnlimitedTypes.h"
-#include "CharacterDataAsset.generated.h"
+#include "SuperDataAssetBase.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class SUPERMANUNLIMITED_API UCharacterDataAsset : public UDataAsset
+UCLASS(BlueprintType, Blueprintable)
+class SUPERMANUNLIMITED_API USuperDataAssetBase : public UDataAsset
 {
 	GENERATED_BODY()
-
+	
 public:
+
+	UPROPERTY(EditDefaultsOnly)
+	FCharacterData CharacterData;
 };
