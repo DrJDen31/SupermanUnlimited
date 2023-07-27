@@ -65,7 +65,7 @@ protected:
 	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
 	UPROPERTY(EditDefaultsOnly)
-	class USuperDataAssetBase* CharacterDataAsset;
+	class USuperDataAssetBase* SuperCharacterDataAsset;
 
 protected:
 

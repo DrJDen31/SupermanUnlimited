@@ -9,7 +9,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/AttributeSets/AttributeSetBase.h"
-#include "DataAssets/SupermanDataAsset.h"
+#include "DataAssets/SuperDataAssetBase.h"
 #include "SuperAbilitySystemComponent.h"
 
 #include "Net/UnrealNetwork.h"
@@ -72,9 +72,9 @@ void ASuperCharacterBase::PostLoad()
 {
 	Super::PostLoad();
 
-	if (IsValid(CharacterDataAsset))
+	if (IsValid(SuperCharacterDataAsset))
 	{
-		SetCharacterData(CharacterDataAsset->CharacterData);
+		SetCharacterData(SuperCharacterDataAsset->CharacterData);
 	}
 }
 
