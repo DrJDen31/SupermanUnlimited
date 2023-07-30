@@ -70,7 +70,7 @@ protected:
 
 protected:
 
-	void GiveAbilities();
+	virtual void GiveAbilities();
 	void ApplyStartupEffects();
 
 	virtual void PossessedBy(AController* NewController) override;

@@ -17,4 +17,7 @@ class SUPERMANUNLIMITED_API USupermanDataAsset : public USuperDataAssetBase
 
 public:
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS")
+	TSubclassOf<class UGameplayAbility> FlyAbility;
+
 };

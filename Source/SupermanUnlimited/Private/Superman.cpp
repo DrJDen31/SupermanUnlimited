@@ -98,6 +98,25 @@ void ASuperman::OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data)
 {
 	// Here we can override the base reaction if needed
 }
+
+void ASuperman::GiveAbilities()
+{
+	if (HasAuthority() && AbilitySystemComponent)
+	{
+		USupermanDataAsset* SDA = Cast<USupermanDataAsset>(SuperCharacterDataAsset);
+		FlightHandle = AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(SDA->FlyAbility));
+
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				5.f,
+				FColor::Cyan,
+				FString::Printf(TEXT("Granting Ability"))
+			);
+		}
+	}
+}
 #pragma endregion
 
 // Called to bind functionality to input
@@ -180,6 +199,7 @@ void ASuperman::OnFlyPressed(const FInputActionValue& Value)
 		if (AbilitySystemComponent)
 		{
 			AbilitySystemComponent->RemoveActiveEffectsWithTags(InAirTags);
+			AbilitySystemComponent->CancelAbilityHandle(FlightHandle);
 		}
 
 	}
@@ -227,6 +247,16 @@ void ASuperman::OnFlyPressed(const FInputActionValue& Value)
 		);
 	}
 	*/
+}
+
+void ASuperman::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->CancelAbilityHandle(FlightHandle);
+	}
 }
 
 void ASuperman::OnBoostPressed(const FInputActionValue& Value)

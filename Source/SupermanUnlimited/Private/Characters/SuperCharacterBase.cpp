@@ -137,16 +137,6 @@ void ASuperCharacterBase::GiveAbilities()
 		for (auto DefaultAbility : CharacterData.Abilities)
 		{
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(DefaultAbility));
-
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(
-					-1,
-					5.f,
-					FColor::Cyan,
-					FString::Printf(TEXT("Granting Ability"))
-				);
-			}
 		}
 	}
 }

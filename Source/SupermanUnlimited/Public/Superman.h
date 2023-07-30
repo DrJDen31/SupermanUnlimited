@@ -63,6 +63,12 @@ public:
 	virtual void OnHealthAttributeChanged(const FOnAttributeChangeData& Data) override;
 
 protected:
+
+	virtual void GiveAbilities() override;
+
+	virtual void Landed(const FHitResult& Hit) override;
+
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay();
 
@@ -83,8 +89,12 @@ protected:
 
 protected:
 
+	FGameplayAbilitySpecHandle FlightHandle;
+
 #pragma region Gameplay Events
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag FlyEventTag;
 #pragma endregion
+
+
 };
