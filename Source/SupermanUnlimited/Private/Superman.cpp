@@ -165,6 +165,44 @@ void ASuperman::Look(const FInputActionValue& Value)
 
 void ASuperman::OnFlyPressed(const FInputActionValue& Value) 
 {
+	if (SuperCharacterMovementComponent->IsFlying())
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				5.f,
+				FColor::Magenta,
+				FString::Printf(TEXT("Attempting to Fall"))
+			);
+		}
+		
+		if (AbilitySystemComponent)
+		{
+			AbilitySystemComponent->RemoveActiveEffectsWithTags(InAirTags);
+		}
+
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				5.f,
+				FColor::Magenta,
+				FString::Printf(TEXT("Attempting Flight"))
+			);
+		}
+
+		FGameplayEventData Payload;
+		Payload.Instigator = this;
+		Payload.EventTag = FlyEventTag;
+
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, FlyEventTag, Payload);
+	}
+
+	/*
 	if (SuperCharacterMovementComponent->IsFlying()) 
 	{
 		SuperCharacterMovementComponent->SetMovementMode(EMovementMode::MOVE_Walking);
@@ -179,6 +217,16 @@ void ASuperman::OnFlyPressed(const FInputActionValue& Value)
 		bUseControllerRotationYaw = true;
 		bUseControllerRotationRoll = true;
 	}
+
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			5.f,
+			FColor::Blue,
+			FString::Printf(TEXT("FlyPressed"))
+		);
+	}
+	*/
 }
 
 void ASuperman::OnBoostPressed(const FInputActionValue& Value)

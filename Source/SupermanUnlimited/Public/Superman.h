@@ -45,6 +45,7 @@ class SUPERMANUNLIMITED_API ASuperman : public APlayableCharacterBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* BoostAction;
 
+
 public:
 	// Sets default values for this character's properties
 	ASuperman(const FObjectInitializer& ObjectInitializer);
@@ -79,4 +80,11 @@ protected:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+
+#pragma region Gameplay Events
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag FlyEventTag;
+#pragma endregion
 };

@@ -22,6 +22,7 @@ class SUPERMANUNLIMITED_API ASuperCharacterBase : public ACharacter, public IAbi
 {
 	GENERATED_BODY()
 
+
 public:
 	// Sets default values for this character's properties
 	ASuperCharacterBase(const FObjectInitializer& ObjectInitializer);
@@ -80,9 +81,6 @@ protected:
 	FDelegateHandle MaxMovementSpeedChangedDelegateHandle;
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly)
-	FGameplayTag FlyEventTag;
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag AttackStartedEventTag;
