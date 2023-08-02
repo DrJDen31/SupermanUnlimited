@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/SUGameplayAbility.h"
-#include "FallGameplayAbility.generated.h"
+#include "GAFall.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SUPERMANUNLIMITED_API UFallGameplayAbility : public USUGameplayAbility
+class SUPERMANUNLIMITED_API UGAFall : public USUGameplayAbility
 {
 	GENERATED_BODY()
 	
-	UFallGameplayAbility();
+	UGAFall();
 	bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const;
 	void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData);
 	void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled);
