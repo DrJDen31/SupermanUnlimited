@@ -4,7 +4,7 @@
 #include "AbilitySystem/Abilities/FlyGameplayAbility.h"
 #include "GameFramework/Character.h"
 #include "Characters/SuperCharacterBase.h"
-#include "SuperCharacterMovementComponent.h"
+#include "Components/SuperCharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
 
 UFlyGameplayAbility::UFlyGameplayAbility()

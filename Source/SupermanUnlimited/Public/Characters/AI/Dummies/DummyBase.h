@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Characters/AICharacterBase.h"
+#include "Characters/AI/AICharacterBase.h"
 #include "DummyBase.generated.h"
 
 /**
@@ -17,6 +17,4 @@ class SUPERMANUNLIMITED_API ADummyBase : public AAICharacterBase
 public:
 
 	ADummyBase();
-
-	void Tick();
 };

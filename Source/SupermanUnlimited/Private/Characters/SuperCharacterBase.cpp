@@ -10,7 +10,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/AttributeSets/AttributeSetBase.h"
 #include "DataAssets/SuperDataAssetBase.h"
-#include "SuperAbilitySystemComponent.h"
+#include "AbilitySystem/SuperAbilitySystemComponent.h"
 
 #include "Net/UnrealNetwork.h"
 
@@ -18,7 +18,7 @@
 
 #include "AbilitySystemLog.h"
 
-#include "SuperCharacterMovementComponent.h"
+#include "Components/SuperCharacterMovementComponent.h"
 
 // Sets default values
 ASuperCharacterBase::ASuperCharacterBase(const FObjectInitializer& ObjectInitializer) :

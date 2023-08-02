@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/PlayableCharacterBase.h"
+#include "Characters/Playable/PlayableCharacterBase.h"
 #include "Characters/SuperCharacterBase.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
-#include "SuperCharacterMovementComponent.h"
+#include "Components/SuperCharacterMovementComponent.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"

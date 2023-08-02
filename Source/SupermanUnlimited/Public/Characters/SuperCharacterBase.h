@@ -35,10 +35,10 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USuperAbilitySystemComponent* AbilitySystemComponent;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, BlueprintReadOnly)
 	UAttributeSetBase* AttributeSet;
 
 	USuperCharacterMovementComponent* SuperCharacterMovementComponent;

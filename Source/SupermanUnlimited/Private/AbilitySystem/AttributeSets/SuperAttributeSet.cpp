@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SuperAttributeSet.h"
+#include "AbilitySystem/AttributeSets/SuperAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"

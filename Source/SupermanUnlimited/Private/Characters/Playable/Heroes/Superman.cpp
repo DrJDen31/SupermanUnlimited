@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Superman.h"
+#include "Characters/Playable/Heroes/Superman.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -11,13 +11,13 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "SuperAttributeSet.h"
+#include "AbilitySystem/AttributeSets/SuperAttributeSet.h"
 #include "DataAssets/SupermanDataAsset.h"
-#include "SuperAbilitySystemComponent.h"
+#include "AbilitySystem/SuperAbilitySystemComponent.h"
 
 #include "Net/UnrealNetwork.h"
 
-#include "SuperCharacterMovementComponent.h"
+#include "Components/SuperCharacterMovementComponent.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"

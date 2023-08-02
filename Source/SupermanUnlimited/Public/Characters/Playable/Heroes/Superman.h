@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Characters/SuperCharacterBase.h"
-#include "Characters/PlayableCharacterBase.h"
+#include "Characters/Playable/PlayableCharacterBase.h"
 #include "AbilitySystemInterface.h"
 #include "Abilities/GameplayAbility.h"
 #include "SupermanUnlimitedTypes.h"
