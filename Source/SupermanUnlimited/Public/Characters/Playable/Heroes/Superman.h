@@ -25,27 +25,6 @@ class SUPERMANUNLIMITED_API ASuperman : public APlayableCharacterBase
 {
 	GENERATED_BODY()
 
-	/** MappingContext */
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	//class UInputMappingContext* DefaultMappingContext;
-
-	/** Move Input Action */
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	//class UInputAction* MoveAction;
-
-	/** Look Input Action */
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	//class UInputAction* LookAction;
-
-	/** Fly Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* FlyAction;
-
-	/** Boost Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* BoostAction;
-
-
 public:
 	// Sets default values for this character's properties
 	ASuperman(const FObjectInitializer& ObjectInitializer);
@@ -73,6 +52,7 @@ protected:
 	virtual void BeginPlay();
 
 
+public: // temp fix to make this public, wait for better workflow
 	// UNIQUE INPUT FUNCTIONALITY
 
 	/** Called for flight input */
@@ -80,12 +60,6 @@ protected:
 
 	void OnBoostPressed(const FInputActionValue& Value);
 	void OnBoostReleased(const FInputActionValue& Value);
-
-	//void Move(const FInputActionValue& Value);
-	//void Look(const FInputActionValue& Value);
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 
